@@ -1,14 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { useWebSocket } from "../context/SocketProvider";
+import { useSocket } from "../context/SocketProvider";
 import useSendMessage from "../hooks/useSendMessage";
 
 const Dashboard = () => {
   const [textInput, setTextInput] = useState("");
-  const { messages, socket } = useWebSocket() || { socket: null, messages: [] };
+  const { messages, socket } = useSocket() || { socket: null, messages: [] };
   const sendMessage = useSendMessage();
   const onclickHandler = (e: React.FormEvent) => {
-    e.preventDefault();
+  
     sendMessage(textInput);
     setTextInput("");
   };

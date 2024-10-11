@@ -1,16 +1,35 @@
+    
+import { useCallback } from "react";
+import { useSocket } from "../context/SocketProvider";
 
-import { useWebSocket } from "../context/SocketProvider";
-
+interface Message{
+  message : string,
+  timestamp: number;
+  
+}
 const useSendMessage = () => {
-  const { messages, socket } = useWebSocket() || { messages: [], socket: null };
+  const { messages, socket } = useSocket() || { messages: [], socket: null };
 
-  const sendMessage = (data: string) => {
+  const sendMessage = useCallback((data: string) => {
     if (socket) {
-      socket?.send(JSON.stringify(data));
+     
+      const newMessage: Message = {
+        message: data,
+        timestamp: Date.now(),
+       
+      };
+      
+      socket.emit("event:message", newMessage);
+      
+      
+      // Don't add the message to the state here, it will be added when received from the server
+      // This ensures consistency across all clients
+      
+      console.log("Message sent:", newMessage);
     } else {
-      console.log("socket not available");
+      console.error("Socket not available");
     }
-  };
+  }, [socket]);
   return sendMessage
 };
 

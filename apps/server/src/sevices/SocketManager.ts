@@ -1,22 +1,33 @@
-import { Server as WebSocketServer } from "ws";
-import { Server as HttpServer } from "http";
-class SocketManager {
-  private _io: WebSocketServer;
-  constructor(httpServer: HttpServer) {
-    this._io = new WebSocketServer({server  :httpServer});
-    console.log("socket server initialized");
-  }
-  public initListeners(){
-    const io  = this._io
-    io.on('connection',(socket)=>{
-        console.log(`new socket connected : ${socket}`)
-        
-        socket.on("message",(data  : {data :string})=>{
-            console.log(`new message received : ${data}`)
-        })
-    })
+import { Server } from "socket.io";
 
+class SocketManager {
+  private _io: Server;
+
+  constructor() {
+    this._io = new Server({
+      cors: {
+        allowedHeaders: ["*"],
+        origin: "*",
+        
+      },
+    });
+  }
+
+  public initListeners() {
+    this._io.on("connect", (socket) => {
+      console.log("from server : New socket connected ", socket.id);
+      socket.on("event:message", ({ message }: { message: string }) => {
+        console.log("from server : new msg received ", message);
+        socket.emit("event:message",message)
+      });
+      socket.on('disconnect',()=>{
+        console.log("from server : socket disconnected")
+      })
+    });
+  }
+  get io(){
+    return this._io
   }
 }
 
-export default SocketManager;
+export default SocketManager

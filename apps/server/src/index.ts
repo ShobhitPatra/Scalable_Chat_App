@@ -1,10 +1,12 @@
-import http from "http";
-import SocketManager from "./sevices/SocketManager";
-const server = http.createServer();
-const socket = new SocketManager(server)
-const PORT = process.env.PORT || 8000;
+import http from "http"
+import SocketManager from "./sevices/SocketManager"
+const server = http.createServer()
+const socketService = new SocketManager()
 
-server.listen(PORT, () => {
-  console.log(`sever running at PORT ${PORT}`);
-});
-socket.initListeners()
+const PORT = process.env.PORT || 8000
+
+socketService.io.attach(server)
+server.listen(PORT,()=>{
+  console.log(`server running on ${PORT}`)
+  socketService.initListeners()
+})
