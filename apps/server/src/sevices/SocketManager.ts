@@ -1,4 +1,9 @@
 import { Server } from "socket.io";
+import Redis from "ioredis"
+
+const pub = new Redis()
+const sub = new Redis()
+
 
 class SocketManager {
   private _io: Server;
@@ -11,6 +16,7 @@ class SocketManager {
         
       },
     });
+    sub.subscribe("MESSAGES")
   }
 
   public initListeners() {
@@ -18,10 +24,15 @@ class SocketManager {
       console.log("from server : New socket connected ", socket.id);
       socket.on("event:message", ({ message }: { message: string }) => {
         console.log("from server : new msg received ", message);
-        socket.emit("event:message",message)
+        pub.publish("MESSAGES",JSON.stringify({message}))
       });
       socket.on('disconnect',()=>{
         console.log("from server : socket disconnected")
+      })
+      sub.on("message",(channel,message)=>{
+        if(channel === "MESSAGES"){
+          this.io.emit("message",message)
+        }
       })
     });
   }
