@@ -17,8 +17,9 @@ const Dashboard = () => {
       <div className="h-screen bg-slate-950 flex justify-center items-center ">
         <div className="bg-slate-900 flex-col min-w-96 min-h-96 rounded-md">
           <div className="bg-slate-600 min-h-80 rounded-t-md">
-            {messages.map((message) => (
-              <div>{JSON.stringify(message)}</div>
+            {messages.map((message) => (<>
+              
+              <div>{JSON.stringify(message.message.data)}</div></>
             ))}
           </div>
 

@@ -1,5 +1,9 @@
 import http from "http"
 import SocketManager from "./sevices/SocketManager"
+import { consumeMessage } from "./sevices/kafka"
+
+
+consumeMessage()
 const server = http.createServer()
 const socketService = new SocketManager()
 

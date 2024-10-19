@@ -3,8 +3,8 @@ import { useCallback } from "react";
 import { useSocket } from "../context/SocketProvider";
 
 interface Message{
-  message : string,
-  timestamp: number;
+  data : string,
+ 
   
 }
 const useSendMessage = () => {
@@ -14,8 +14,8 @@ const useSendMessage = () => {
     if (socket) {
      
       const newMessage: Message = {
-        message: data,
-        timestamp: Date.now(),
+        data
+       
        
       };
       

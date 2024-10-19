@@ -1,14 +1,17 @@
 "use client";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { json } from "stream/consumers";
 
 interface SocketContextProviderProps {
   children: React.ReactNode;
 }
 
 interface Message {
-  message: string;
-  timestamp: number;
+  message:{
+    data:string
+  }
+  
 }
 
 interface SocketContextValues {
@@ -25,10 +28,11 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const onMsgRec = useCallback((msg: string) => {
+  const onMsgRec = useCallback((msg:any) => {
     console.log("msg rec on client  :", msg);
-    const { message } = JSON.parse(msg);
-    setMessages((prev) => [...prev, message]);
+    const parsedMessage  = JSON.parse(msg.message)
+    setMessages((prev) => [...prev, parsedMessage]);
+    
   }, []);
   useEffect(() => {
     const _io = io("http://localhost:8000");
